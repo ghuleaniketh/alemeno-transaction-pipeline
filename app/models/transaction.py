@@ -19,6 +19,7 @@ class Transaction(Base):
     status = Column(String, nullable=True)
     category = Column(String, nullable=True)
     account_id = Column(String, nullable=True)
+    notes = Column(String, nullable=True)
 
     is_anomaly = Column(Boolean, nullable=False, default=False)
     anomaly_reason = Column(String, nullable=True)   # e.g. "statistical_outlier", "currency_mismatch"
