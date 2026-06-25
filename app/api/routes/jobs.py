@@ -8,6 +8,8 @@ from app.models.job import Job
 from app.schemas.job import JobUploadResponse
 from app.redis_conn import queue
 from app.workers.tasks import process_job
+from app.schemas.job import JobUploadResponse, JobStatusResponse
+
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
@@ -48,6 +50,28 @@ async def upload_csv(
     # 5. Return immediately — the client will poll /status from here.
     return JobUploadResponse(job_id=job.id, status=job.status)
 
-@router.get("/test", response_model=JobUploadResponse)
-async def test():
-    return {"message": " hello API Running"}
+@router.get("/{job_id}/status", response_model=JobStatusResponse)
+def get_job_status(job_id: str, db: Session = Depends(get_db)):
+    job = db.query(Job).filter(Job.id == job_id).first()
+
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    summary = None
+    if job.status == "completed":
+        summary = {
+            "row_count_raw": job.row_count_raw,
+            "row_count_clean": job.row_count_clean,
+        }
+
+    return JobStatusResponse(
+        job_id=job.id,
+        status=job.status,
+        filename=job.filename,
+        row_count_raw=job.row_count_raw,
+        row_count_clean=job.row_count_clean,
+        created_at=job.created_at,
+        completed_at=job.completed_at,
+        error_message=job.error_message,
+        summary=summary,
+    )
