@@ -46,7 +46,7 @@ services:
       redis:
         condition: service_healthy
     volumes:
-      - ./app:/code/app
+      - ./app:/app/app
     command: >
       sh -c "alembic upgrade head &&
              uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
@@ -66,7 +66,7 @@ services:
       redis:
         condition: service_healthy
     volumes:
-      - ./app:/code/app
+      - ./app:/app/app
     command: ["rq", "worker", "--url", "redis://redis:6379"]
 
 volumes:
