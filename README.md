@@ -1,4 +1,4 @@
-# alemeno-transaction-pipeline
+# [AI-Transaction-Analyzer-Pipeline](https://github.com/ghuleaniketh/transaction-analyzer-pipeline)
 
 A FastAPI-based transaction processing pipeline that ingests CSV files, runs cleaning
 and anomaly detection, enriches missing categories using an LLM (Google Gemini),
